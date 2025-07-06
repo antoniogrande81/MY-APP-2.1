@@ -16,39 +16,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         /* CSS completo dell'applicazione */
         :root { --primary-indigo: #1e104e; --accent-magenta: #e91e63; --accent-violet: #6a5acd; --bg-main: #f4f7fc; --bg-card: #ffffff; --text-dark: #1e104e; --text-light: #6e7a8a; --border-color: #e8ecf1; --shadow-color: rgba(30, 16, 78, 0.08); --error-red: #dc3545; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24 }
-        body { margin: 0; font-family: 'Poppins', sans-serif; background-color: var(--bg-main); color: var(--text-dark); }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background-color: var(--bg-main); }
         .app-container { max-width: 420px; margin: auto; background-color: var(--bg-card); min-height: 100vh; position: relative; display: flex; flex-direction: column;}
         main { flex-grow: 1; padding: 24px; padding-bottom: 90px; }
-        .section-title { font-size: 20px; font-weight: 600; color: var(--primary-indigo); margin-bottom: 16px; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
         template { display: none; }
         .auth-container { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 80vh; padding: 20px; box-sizing: border-box; }
-        .auth-logo { font-size: 50px; color: var(--accent-violet); margin-bottom: 20px; }
-        .auth-form { width: 100%; max-width: 320px; }
-        .auth-form h1 { text-align: center; color: var(--primary-indigo); font-size: 24px; margin-bottom: 8px; }
-        .auth-form p { text-align: center; color: var(--text-light); margin-bottom: 24px; }
         .input-group { margin-bottom: 16px; }
-        .input-group label { display: block; font-weight: 500; font-size: 14px; margin-bottom: 6px; }
         .input-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 16px; box-sizing: border-box; }
-        .input-group-checkbox { display: flex; align-items: center; margin-bottom: 20px; margin-top: 5px; }
-        .input-group-checkbox input { margin-right: 10px; width: 16px; height: 16px; accent-color: var(--accent-violet); }
-        .input-group-checkbox label { font-size: 13px; color: var(--text-light); }
-        .input-group-checkbox a { color: var(--accent-violet); text-decoration: none; font-weight: 500; }
-        .auth-link { text-align: center; margin-top: 20px; font-size: 14px; }
-        .auth-link a { color: var(--accent-violet); text-decoration: none; font-weight: 500; cursor: pointer; }
-        .btn, .btn-primary { display: block; width: 100%; box-sizing: border-box; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; text-align: center; text-decoration: none; border: none; }
+        .input-group-checkbox { display: flex; align-items: center; margin-bottom: 20px; }
+        .input-group-checkbox input { margin-right: 10px; }
+        .input-group-checkbox a { color: var(--accent-violet); }
+        .auth-link { text-align: center; margin-top: 20px; }
+        .auth-link a { color: var(--accent-violet); cursor: pointer; }
+        .btn, .btn-primary, .btn-secondary { display: block; width: 100%; box-sizing: border-box; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; text-align: center; border: none; }
         .btn-primary { background: linear-gradient(90deg, var(--accent-magenta), var(--accent-violet)); color: white; margin-bottom: 12px; }
         .btn-secondary { background-color: var(--border-color); color: var(--text-dark); }
-        .bottom-nav { position: sticky; bottom: 0; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; justify-content: space-around; box-shadow: 0 -4px 20px var(--shadow-color); border-top: 1px solid rgba(0, 0, 0, 0.05); padding: 8px 0; }
-        .nav-item { text-align: center; color: var(--text-light); cursor: pointer; flex: 1; padding: 8px 0; transition: color 0.3s ease; text-decoration: none; }
+        .bottom-nav { position: sticky; bottom: 0; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); display: flex; justify-content: space-around; box-shadow: 0 -4px 20px var(--shadow-color); border-top: 1px solid rgba(0, 0, 0, 0.05); padding: 8px 0; }
+        .nav-item { text-align: center; color: var(--text-light); cursor: pointer; flex: 1; text-decoration: none; }
         .nav-item.active, .nav-item:hover { color: var(--accent-violet); }
         .nav-item .icon { font-size: 26px; }
         .nav-item.active .icon { font-variation-settings: 'FILL' 1; }
@@ -59,52 +48,37 @@
 <body>
 
     <template id="template-login">
-        <div class="auth-container fade-in">
-            <div class="auth-logo material-symbols-outlined">shield_person</div>
-            <div class="auth-form">
-                <h1>Benvenuto</h1>
-                <p>Accedi o registrati per continuare.</p>
-                <div class="input-group"><label for="auth-email">Email</label><input type="email" id="auth-email" placeholder="mario.rossi@email.com" autocomplete="email"></div>
-                <div class="input-group"><label for="auth-password">Password</label><input type="password" id="auth-password" placeholder="••••••••••" autocomplete="current-password"></div>
-                <div class="input-group-checkbox"><input type="checkbox" id="privacy-check"><label for="privacy-check">Ho letto e accetto la <a href="#" target="_blank">Privacy Policy</a></label></div>
-                <button class="btn-primary" id="login-button">Accedi</button>
-                <button class="btn-secondary" id="register-button">Registrati</button>
-                <div class="auth-link"><a data-page="forgot-password">Password dimenticata?</a></div>
-            </div>
+        <div class="auth-container">
+            <h1>Benvenuto</h1>
+            <div class="input-group"><input type="email" id="auth-email" placeholder="Email"></div>
+            <div class="input-group"><input type="password" id="auth-password" placeholder="Password"></div>
+            <div class="input-group-checkbox"><input type="checkbox" id="privacy-check"><label for="privacy-check">Accetto la <a href="#">Privacy Policy</a></label></div>
+            <button class="btn-primary" id="login-button">Accedi</button>
+            <button class="btn-secondary" id="register-button">Registrati</button>
+            <div class="auth-link"><a data-page="forgot-password">Password dimenticata?</a></div>
         </div>
     </template>
     <template id="template-forgot-password">
-        <div class="auth-container fade-in">
-            <div class="auth-logo material-symbols-outlined">lock_reset</div>
-            <div class="auth-form">
-                <h1>Recupera Password</h1>
-                <p>Inserisci la tua email per ricevere le istruzioni.</p>
-                <div class="input-group"><label for="reset-email">Email</label><input type="email" id="reset-email" placeholder="mario.rossi@email.com" autocomplete="email"></div>
-                <button class="btn-primary" id="reset-button">Invia Istruzioni</button>
-                <div class="auth-link"><a data-page="login">Torna al Login</a></div>
-            </div>
+        <div class="auth-container">
+            <h1>Recupera Password</h1>
+            <div class="input-group"><input type="email" id="reset-email" placeholder="La tua email"></div>
+            <button class="btn-primary" id="reset-button">Invia Istruzioni</button>
+            <div class="auth-link"><a data-page="login">Torna al Login</a></div>
         </div>
     </template>
     <template id="template-update-password">
-        <div class="auth-container fade-in">
-            <div class="auth-logo material-symbols-outlined">password</div>
-            <div class="auth-form">
-                <h1>Crea una nuova password</h1>
-                <p>Inserisci la tua nuova password sicura.</p>
-                <div class="input-group">
-                    <label for="new-password">Nuova Password</label>
-                    <input type="password" id="new-password" placeholder="••••••••••">
-                </div>
-                <button class="btn-primary" id="update-password-button">Salva Nuova Password</button>
-            </div>
+        <div class="auth-container">
+            <h1>Crea una nuova password</h1>
+            <div class="input-group"><input type="password" id="new-password" placeholder="Nuova password"></div>
+            <button class="btn-primary" id="update-password-button">Salva Nuova Password</button>
         </div>
     </template>
     <template id="template-home">
-        <header class="header fade-in"><div><h1 id="user-greeting">Ciao!</h1><p>Il tuo sindacato in un'app</p></div></header>
-        </template>
+        <h1 id="user-greeting">Ciao!</h1>
+    </template>
     <template id="template-profilo">
-        <h1 class="section-title fade-in">Il Mio Profilo</h1>
-        <div class="profile-header fade-in"><div class="profile-avatar" id="user-avatar">?</div><h2 id="user-email-profile"></h2></div>
+        <h1>Il Mio Profilo</h1>
+        <h2 id="user-email-profile"></h2>
         <button class="btn-logout">Esci (Logout)</button>
     </template>
 
@@ -124,33 +98,32 @@
             
             const appRoot = document.getElementById('app-root');
             const mainNav = document.getElementById('main-nav');
+            let currentUser = null;
 
             const displayUserData = (user) => {
                 if (!user) return;
+                currentUser = user;
                 const userEmail = user.email;
                 const greeting = document.getElementById('user-greeting');
                 const profileEmail = document.getElementById('user-email-profile');
-                const avatar = document.getElementById('user-avatar');
                 if (greeting) greeting.textContent = `Ciao, ${userEmail.split('@')[0]}!`;
                 if (profileEmail) profileEmail.textContent = userEmail;
-                if (avatar) avatar.textContent = userEmail.charAt(0).toUpperCase();
             };
             
             async function handleLogin() {
                 const email = document.getElementById('auth-email').value;
                 const password = document.getElementById('auth-password').value;
-                if (!email || !password) { alert("Email e password sono obbligatori."); return; }
-                await supabaseClient.auth.signInWithPassword({ email, password });
+                const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) alert("Errore: " + error.message);
             }
 
             async function handleRegister() {
                 const privacyCheckbox = document.getElementById('privacy-check');
-                if (!privacyCheckbox.checked) { alert("Per registrarti devi prima accettare la Privacy Policy."); return; }
+                if (!privacyCheckbox.checked) { alert("Accetta la Privacy Policy."); return; }
                 const email = document.getElementById('auth-email').value;
                 const password = document.getElementById('auth-password').value;
-                if (!email || !password) { alert("Email e password sono obbligatori."); return; }
-                const { data, error } = await supabaseClient.auth.signUp({ email, password });
-                if (error) alert("Errore: " + error.message); else alert("Registrazione riuscita! Controlla la tua email per confermare l'account.");
+                const { error } = await supabaseClient.auth.signUp({ email, password });
+                if (error) alert("Errore: " + error.message); else alert("Registrazione riuscita! Controlla la tua email per la conferma.");
             }
             
             async function handleLogout() {
@@ -159,12 +132,11 @@
 
             async function handlePasswordReset() {
                 const email = document.getElementById('reset-email').value;
-                if (!email) { alert("Inserisci la tua email."); return; }
                 const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { 
                     redirectTo: window.location.origin 
                 });
                 if (error) alert("Errore: " + error.message); 
-                else alert("Se l'utente esiste, abbiamo inviato le istruzioni per il recupero password.");
+                else alert("Se l'utente esiste, email di recupero inviata.");
             }
             
             async function handlePasswordUpdate() {
@@ -173,8 +145,8 @@
                 const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
                 if (error) alert("Errore: " + error.message); 
                 else { 
-                    alert("Password aggiornata con successo! Ora puoi effettuare il login.");
-                    navigateTo('login');
+                    alert("Password aggiornata con successo! Verrai reindirizzato al login.");
+                    await supabaseClient.auth.signOut(); // Forza il logout per richiedere il nuovo login
                 }
             }
             
@@ -201,13 +173,17 @@
                     document.getElementById('register-button')?.addEventListener('click', handleRegister);
                 }
                 if (pageName === 'profilo') {
-                    appRoot.querySelector('.btn-logout')?.addEventListener('click', handleLogout);
+                    document.querySelector('.btn-logout')?.addEventListener('click', handleLogout);
+                    displayUserData(currentUser);
                 }
                 if (pageName === 'forgot-password') {
                     document.getElementById('reset-button')?.addEventListener('click', handlePasswordReset);
                 }
                 if (pageName === 'update-password') {
                     document.getElementById('update-password-button')?.addEventListener('click', handlePasswordUpdate);
+                }
+                if(pageName === 'home'){
+                    displayUserData(currentUser);
                 }
             };
             
@@ -216,17 +192,19 @@
                 if (pageLink) { event.preventDefault(); navigateTo(pageLink.dataset.page); }
             });
 
-            // --- LOGICA DI GESTIONE DEGLI EVENTI DI AUTENTICAZIONE (METODO CORRETTO) ---
+            // --- GESTIONE DEGLI EVENTI DI AUTENTICAZIONE (METODO ROBUSTO) ---
             supabaseClient.auth.onAuthStateChange(async (event, session) => {
+                console.log('Auth Event:', event); // Utile per debug
+                
                 if (event === 'PASSWORD_RECOVERY') {
                     // L'utente è arrivato dal link di recupero password
                     navigateTo('update-password');
-                } else if (session) {
-                    // L'utente è loggato (o ha appena fatto login/registrazione)
+                } else if (event === 'SIGNED_IN') {
+                    // L'utente è loggato
                     navigateTo('home');
                     displayUserData(session.user);
-                } else {
-                    // L'utente non è loggato (o ha fatto logout)
+                } else if (event === 'SIGNED_OUT') {
+                    // L'utente ha fatto logout o non è loggato
                     navigateTo('login');
                 }
             });
