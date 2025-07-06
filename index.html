@@ -75,52 +75,38 @@
         .nav-item.active .icon { font-variation-settings: 'FILL' 1; }
         .nav-item span { display: block; font-size: 12px; font-weight: 500; }
         .hidden { display: none; }
-        /* Stili Chatbot (rimangono uguali) */
-        .chatbot-fab { position: fixed; bottom: 90px; right: 20px; width: 60px; height: 60px; background: linear-gradient(45deg, var(--accent-gold), #c9a253); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 6px 18px rgba(30, 16, 78, 0.2); cursor: pointer; z-index: 1000; }
+        .chatbot-fab { position: fixed; bottom: 90px; right: 20px; width: 60px; height: 60px; background: linear-gradient(45deg, var(--accent-magenta), var(--accent-violet)); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 6px 18px rgba(30, 16, 78, 0.2); cursor: pointer; z-index: 1000; }
         .chatbot-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(30, 16, 78, 0.4); z-index: 1001; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
         .chatbot-overlay.visible { opacity: 1; visibility: visible; }
+        .chatbot-window { width: 90%; max-width: 400px; height: 85%; background-color: var(--bg-card); border-radius: 24px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; overflow: hidden; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .chatbot-overlay.visible .chatbot-window { transform: scale(1); }
+        .chat-header { padding: 16px 20px; background-color: var(--primary-indigo); color: white; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .chat-header h3 { margin: 0; font-size: 18px; }
+        .close-chat { font-size: 28px; cursor: pointer; }
+        .chat-body { flex-grow: 1; padding: 20px; background-color: var(--bg-main); overflow-y: auto; }
+        .chat-message { margin-bottom: 16px; display: flex; flex-direction: column; max-width: 90%; }
+        .chat-message.bot { align-self: flex-start; }
+        .chat-message.user { align-self: flex-end; }
+        .chat-message .bubble { padding: 12px 18px; font-size: 15px; line-height: 1.5; border-radius: 18px; white-space: pre-wrap; }
+        .chat-message.bot .bubble { background-color: var(--bg-card); color: var(--text-dark); border-bottom-left-radius: 4px; }
+        .chat-message.user .bubble { background-color: var(--accent-violet); color: white; border-bottom-right-radius: 4px; }
+        .chat-input { padding: 12px; background-color: var(--bg-card); display: flex; align-items: center; border-top: 1px solid var(--border-color); }
+        .chat-input input { flex-grow: 1; border: none; background-color: var(--bg-main); border-radius: 25px; padding: 12px 18px; font-size: 15px; }
+        .chat-input button { background-color: var(--accent-magenta); color: white; border: none; border-radius: 50%; width: 48px; height: 48px; margin-left: 10px; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <template id="template-login">
-        <div class="auth-container" data-page-id="login"><h1>Accedi</h1><p>Bentornato, inserisci le tue credenziali.</p><div class="input-group"><input type="email" id="auth-email" placeholder="Email" autocomplete="email"></div><div class="input-group"><input type="password" id="auth-password" placeholder="Password" autocomplete="current-password"></div><button class="btn-primary" id="login-button">Accedi</button><div class="auth-link"><a data-page="register">Non hai un account? Registrati</a></div><div class="auth-link" style="margin-top: 10px;"><a data-page="forgot-password">Password dimenticata?</a></div></div>
-    </template>
-    <template id="template-register">
-        <div class="auth-container" data-page-id="register"><h1>Crea un Account</h1><p>Entra a far parte della nostra community.</p><div class="input-group"><input type="text" id="register-name" placeholder="Nome"></div><div class="input-group"><input type="text" id="register-surname" placeholder="Cognome"></div><div class="input-group"><input type="tel" id="register-phone" placeholder="Telefono"></div><div class="input-group"><input type="email" id="register-email" placeholder="Email"></div><div class="input-group"><input type="password" id="register-password" placeholder="Password (min. 6 caratteri)"></div><div class="input-group"><input type="password" id="register-confirm-password" placeholder="Conferma Password"></div><div class="input-group-checkbox"><input type="checkbox" id="privacy-check"><label for="privacy-check"> Accetto la <a href="#">Privacy Policy</a></label></div><button class="btn-primary" id="register-button">Registrati</button><div class="auth-link"><a data-page="login">Hai già un account? Accedi</a></div></div>
-    </template>
-    <template id="template-forgot-password">
-        <div class="auth-container" data-page-id="forgot-password"><h1>Recupera Password</h1><p>Inserisci la tua email per ricevere le istruzioni.</p><div class="input-group"><input type="email" id="reset-email" placeholder="La tua email"></div><button class="btn-primary" id="reset-button">Invia Istruzioni</button><div class="auth-link"><a data-page="login">Torna al Login</a></div></div>
-    </template>
-    <template id="template-update-password">
-        <div class="auth-container" data-page-id="update-password"><h1>Crea una nuova password</h1><p>Inserisci la tua nuova password sicura.</p><div class="input-group"><input type="password" id="new-password" placeholder="Nuova password"></div><button class="btn-primary" id="update-password-button">Salva Nuova Password</button></div>
-    </template>
-    <template id="template-home">
-        <main data-page-id="home" class="fade-in"><header class="header"><div style="line-height: 1.2;"><h1 id="user-greeting">Ciao!</h1><p>Il tuo dirigente sindacale in tasca.</p></div><span class="material-symbols-outlined" style="font-size: 28px; color: var(--text-light); cursor: pointer;">notifications</span></header><div class="main-card"><div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;"><span class="material-symbols-outlined" style="font-size: 24px;">campaign</span><h2>IN EVIDENZA</h2></div><p>Rinnovo contratto: siglata l'intesa per il triennio 2025-2027.</p></div>
-        <h2 style="margin-top: 28px;">Accesso Rapido</h2>
-        <div class="quick-actions">
-            <div class="action-item" data-page="calendario"><div class="icon-wrapper"><span class="material-symbols-outlined" style="font-size: 32px;">calendar_month</span></div><span>Calendario</span></div>
-            <div class="action-item" data-page="bacheca"><div class="icon-wrapper"><span class="material-symbols-outlined" style="font-size: 32px;">feed</span></div><span>Notizie</span></div>
-            <div class="action-item" data-page="documenti"><div class="icon-wrapper"><span class="material-symbols-outlined" style="font-size: 32px;">receipt_long</span></div><span>Documenti</span></div>
-            <div class="action-item" id="ask-virgilio-button"><div class="icon-wrapper"><span class="material-symbols-outlined" style="font-size: 32px;">chat</span></div><span>Chiedi a Virgilio</span></div>
-        </div>
-        </main>
-    </template>
-    <template id="template-profilo">
-        <main data-page-id="profilo" class="fade-in"><h1>Il Mio Profilo</h1><div class="profile-card"><h2>Dati Personali</h2><div class="input-group"><label for="profile-name">Nome</label><input type="text" id="profile-name"></div><div class="input-group"><label for="profile-surname">Cognome</label><input type="text" id="profile-surname"></div><div class="input-group"><label for="profile-phone">Telefono</label><input type="tel" id="profile-phone"></div><button class="btn-primary" id="update-profile-button">Salva Modifiche</button></div><div class="share-card" id="share-button"><h3>Fai conoscere il sindacato</h3><p>Invita un collega ad iscriversi.</p></div><button class="btn-logout">Esci (Logout)</button></main>
-    </template>
-    <template id="template-bacheca">
-        <main data-page-id="bacheca" class="fade-in"><h1>Notizie Sindacali</h1><div class="news-item"><a href="https://www.carabinierinsc.it/informazione/nsc-veneto-un-successo-lavvio-del-corso-di-avanzato-di-difesa-personale-e-tecniche-di-disarmo/" target="_blank"><div class="news-icon"><span class="material-symbols-outlined">article</span></div><div class="news-content"><p>Corso di Difesa Personale e Tecniche di Disarmo.</p><span>Oggi</span></div></a></div></main>
-    </template>
-    <template id="template-documenti">
-        <main data-page-id="documenti" class="fade-in"><h1>I Miei Documenti</h1><p>Qui troverai buste paga e modulistica.</p></main>
-    </template>
-    <template id="template-contatti">
-        <main data-page-id="contatti" class="fade-in"><h1>Contatta il Tuo Dirigente</h1><div class="profile-card" style="text-align: center;"><img src="https://via.placeholder.com/120" alt="Foto dirigente" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 3px solid var(--accent-gold);"><h2 style="margin-bottom: 4px;">Mario Rossi</h2><p style="color: var(--text-light); margin-top: 0;">Delegato Regionale</p><a href="tel:+390000000000" class="btn-primary" style="margin-top: 20px;">Chiama ora</a><a href="mailto:esempio@sindacato.it" class="btn-secondary">Invia Email</a></div></main>
-    </template>
-    <template id="template-calendario">
-        <main data-page-id="calendario" class="fade-in"><h1>Calendario Eventi</h1><div class="profile-card"><h2 style="margin-bottom: 8px;">Luglio 2025</h2><div class="news-item" style="padding: 16px;"><div class="news-icon" style="background-color: var(--accent-gold);"><span class="material-symbols-outlined">event</span></div><div class="news-content"><p>Scadenza domanda trasferimenti</p><span>15 Luglio 2025</span></div></div><div class="news-item" style="padding: 16px;"><div class="news-icon" style="background-color: var(--accent-gold);"><span class="material-symbols-outlined">groups</span></div><div class="news-content"><p>Assemblea sindacale online</p><span>28 Luglio 2025</span></div></div></div></main>
-    </template>
+    <template id="template-login"><div class="auth-container" data-page-id="login"><h1>Accedi</h1><p>Bentornato, inserisci le tue credenziali.</p><div class="input-group"><input type="email" id="auth-email" placeholder="Email" autocomplete="email"></div><div class="input-group"><input type="password" id="auth-password" placeholder="Password" autocomplete="current-password"></div><button class="btn-primary" id="login-button">Accedi</button><div class="auth-link"><a data-page="register">Non hai un account? Registrati</a></div><div class="auth-link" style="margin-top: 10px;"><a data-page="forgot-password">Password dimenticata?</a></div></div></template>
+    <template id="template-register"><div class="auth-container" data-page-id="register"><h1>Crea un Account</h1><p>Entra a far parte della nostra community.</p><div class="input-group"><input type="text" id="register-name" placeholder="Nome"></div><div class="input-group"><input type="text" id="register-surname" placeholder="Cognome"></div><div class="input-group"><input type="tel" id="register-phone" placeholder="Telefono"></div><div class="input-group"><input type="email" id="register-email" placeholder="Email"></div><div class="input-group"><input type="password" id="register-password" placeholder="Password (min. 6 caratteri)"></div><div class="input-group"><input type="password" id="register-confirm-password" placeholder="Conferma Password"></div><div class="input-group-checkbox"><input type="checkbox" id="privacy-check"><label for="privacy-check"> Accetto la <a href="#">Privacy Policy</a></label></div><button class="btn-primary" id="register-button">Registrati</button><div class="auth-link"><a data-page="login">Hai già un account? Accedi</a></div></div></template>
+    <template id="template-forgot-password"><div class="auth-container" data-page-id="forgot-password"><h1>Recupera Password</h1><p>Inserisci la tua email per ricevere le istruzioni.</p><div class="input-group"><input type="email" id="reset-email" placeholder="La tua email"></div><button class="btn-primary" id="reset-button">Invia Istruzioni</button><div class="auth-link"><a data-page="login">Torna al Login</a></div></div></template>
+    <template id="template-update-password"><div class="auth-container" data-page-id="update-password"><h1>Crea una nuova password</h1><p>Inserisci la tua nuova password sicura.</p><div class="input-group"><input type="password" id="new-password" placeholder="Nuova password"></div><button class="btn-primary" id="update-password-button">Salva Nuova Password</button></div></template>
+    <template id="template-home"><main data-page-id="home" class="fade-in"><header class="header"><div style="line-height: 1.2;"><h1 id="user-greeting">Ciao!</h1><p style="margin: 0; color: var(--text-light); font-size: 16px;">Il tuo dirigente sindacale in tasca.</p></div><span class="material-symbols-outlined" style="font-size: 28px; color: var(--text-light); cursor: pointer;">notifications</span></header><div class="main-card"><div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;"><span class="material-symbols-outlined" style="font-size: 24px;">campaign</span><h2>IN EVIDENZA</h2></div><p>Rinnovo contratto: siglata l'intesa per il triennio 2025-2027.</p></div><h2 style="margin-top: 28px;">Accesso Rapido</h2><div class="quick-actions"><div class="action-item" data-page="calendario"><div class="icon-wrapper"><span class="material-symbols-outlined" style="font-size: 32px;">calendar_month</span></div><span>Calendario</span></div><div class="action-item" data-page="bacheca"><div class="icon-wrapper"><span class="material-symbols-outlined" style="font-size: 32px;">feed</span></div><span>Notizie</span></div><div class="action-item" data-page="documenti"><div class="icon-wrapper"><span class="material-symbols-outlined" style="font-size: 32px;">receipt_long</span></div><span>Documenti</span></div><div class="action-item" id="ask-virgilio-button"><div class="icon-wrapper"><span class="material-symbols-outlined" style="font-size: 32px;">chat</span></div><span>Chiedi a Virgilio</span></div></div></main></template>
+    <template id="template-profilo"><div data-page-id="profilo" class="fade-in"><h1>Il Mio Profilo</h1><div class="profile-card"><h2>Dati Personali</h2><div class="input-group"><label for="profile-name">Nome</label><input type="text" id="profile-name"></div><div class="input-group"><label for="profile-surname">Cognome</label><input type="text" id="profile-surname"></div><div class="input-group"><label for="profile-phone">Telefono</label><input type="tel" id="profile-phone"></div><button class="btn-primary" id="update-profile-button">Salva Modifiche</button></div><div class="share-card" id="share-button"><h3>Fai conoscere il sindacato</h3><p>Invita un collega ad iscriversi.</p></div><button class="btn-logout">Esci (Logout)</button></div></template>
+    <template id="template-bacheca"><div data-page-id="bacheca" class="fade-in"><h1>Notizie Sindacali</h1><div class="search-bar-container"><input type="search" id="bacheca-search" placeholder="Chiedi a Virgilio sulle notizie..."><button class="btn-primary" id="bacheca-search-button" style="margin: 0; padding: 0 20px;"><span class="material-symbols-outlined">search</span></button></div><div class="news-item"><a href="https://www.carabinierinsc.it/informazione/nsc-veneto-un-successo-lavvio-del-corso-di-avanzato-di-difesa-personale-e-tecniche-di-disarmo/" target="_blank"><div class="news-icon"><span class="material-symbols-outlined">article</span></div><div class="news-content"><p>Corso di Difesa Personale e Tecniche di Disarmo.</p><span>Oggi</span></div></a><button class="context-chat-button" data-context="Corso di Difesa Personale e Tecniche di Disarmo"><span class="material-symbols-outlined">chat_bubble</span></button></div></div></template>
+    <template id="template-documenti"><div data-page-id="documenti" class="fade-in"><h1>I Miei Documenti</h1><p>Qui troverai buste paga e modulistica.</p></div></template>
+    <template id="template-contatti"><div data-page-id="contatti" class="fade-in"><h1>Contatta il Tuo Dirigente</h1><div class="profile-card" style="text-align: center;"><img src="https://via.placeholder.com/120" alt="Foto dirigente" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 3px solid var(--accent-gold);"><h2 style="margin-bottom: 4px;">Mario Rossi</h2><p style="color: var(--text-light); margin-top: 0;">Delegato Regionale</p><a href="tel:+390000000000" class="btn-primary" style="margin-top: 20px;">Chiama ora</a><a href="mailto:esempio@sindacato.it" class="btn-secondary">Invia Email</a></div></div></template>
+    <template id="template-calendario"><div data-page-id="calendario" class="fade-in"><h1>Calendario Eventi</h1><div class="profile-card"><h2 style="margin-bottom: 8px;">Luglio 2025</h2><div class="news-item" style="padding: 16px;"><div class="news-icon" style="background-color: var(--accent-gold);"><span class="material-symbols-outlined">event</span></div><div class="news-content"><p>Scadenza domanda trasferimenti</p><span>15 Luglio 2025</span></div></div><div class="news-item" style="padding: 16px;"><div class="news-icon" style="background-color: var(--accent-gold);"><span class="material-symbols-outlined">groups</span></div><div class="news-content"><p>Assemblea sindacale online</p><span>28 Luglio 2025</span></div></div></div></div></template>
 
     <div class="app-container">
         <main id="app-root"></main>
@@ -136,11 +122,100 @@
     </div>
     
     <div class="chatbot-overlay" id="chatbot-overlay">
+        <div class="chatbot-window">
+            <div class="chat-header"><h3>Virgilio</h3><span class="material-symbols-outlined close-chat" id="close-chat-button">close</span></div>
+            <div class="chat-body" id="chat-body"></div>
+            <div class="chat-input"><input type="text" id="chat-input" placeholder="Fai una domanda..."><button id="chat-send-button" aria-label="Invia"><span class="material-symbols-outlined">send</span></button></div>
         </div>
+    </div>
     
     <script>
-        // Il JavaScript robusto che abbiamo finalizzato.
-        // Ometto il codice per brevità, ma va incollato qui l'ultimo script completo e funzionante.
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inizializzazione
+            const SUPABASE_URL = 'https://ywzkwxoxmhlmiasrgglw.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3emt3eG94bWhsbWlhc3JnZ2x3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NDc2MDAsImV4cCI6MjA2NzMyMzYwMH0.fYJC_PycwbQHwPyQHfA63wukdB5Ma4SgwSy-6ms66fs';
+            const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const appRoot = document.getElementById('app-root');
+            const mainNav = document.getElementById('main-nav');
+            const openChatButton = document.getElementById('open-chat-button');
+            const closeChatButton = document.getElementById('close-chat-button');
+            const chatbotOverlay = document.getElementById('chatbot-overlay');
+            const chatBody = document.getElementById('chat-body');
+            const chatInput = document.getElementById('chat-input');
+            const chatSendButton = document.getElementById('chat-send-button');
+            let currentUser = null;
+
+            // Funzioni UI
+            const showToast = (message) => { const t = document.getElementById('toast'); if(t) {t.textContent = message; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000);} };
+            const displayUserData = (user) => { if (!user) return; currentUser = user; const uGreeting = document.getElementById('user-greeting'); if (uGreeting) uGreeting.textContent = `Ciao, ${user.user_metadata.nome || user.email.split('@')[0]}!`; const pName = document.getElementById('profile-name'); const pSurname = document.getElementById('profile-surname'); const pPhone = document.getElementById('profile-phone'); const pEmail = document.getElementById('profile-email'); if (pName) pName.value = user.user_metadata.nome || ''; if (pSurname) pSurname.value = user.user_metadata.cognome || ''; if (pPhone) pPhone.value = user.user_metadata.telefono || ''; if (pEmail) pEmail.value = user.email; };
+            const navigateTo = (pageName) => { const t = document.getElementById(`template-${pageName}`); if (!t) return; appRoot.innerHTML = ''; appRoot.appendChild(t.content.cloneNode(true)); updateNavUI(pageName); addPageEventListeners(pageName); };
+            const updateNavUI = (currentPage) => { const isAuthPage = ['login', 'register', 'forgot-password', 'update-password'].includes(currentPage); mainNav.classList.toggle('hidden', isAuthPage); openChatButton?.classList.toggle('hidden', isAuthPage); document.querySelectorAll('.nav-item').forEach(i => { i.classList.toggle('active', i.dataset.page === currentPage); }); };
+            const openChat = (prefilledText = '') => { if (chatInput) chatInput.value = prefilledText; chatbotOverlay.classList.add('visible'); if (prefilledText) chatInput.focus(); };
+
+            // Funzioni di Autenticazione e Profilo
+            async function handleLogin() { const { error } = await supabaseClient.auth.signInWithPassword({ email: document.getElementById('auth-email').value, password: document.getElementById('auth-password').value }); if (error) alert(error.message); }
+            async function handleRegister() { const p1 = document.getElementById('register-password').value; if (p1.length < 6) { alert('La password deve contenere almeno 6 caratteri.'); return; } if (p1 !== document.getElementById('register-confirm-password').value) { alert('Le password non coincidono.'); return; } if (!document.getElementById('privacy-check').checked) { alert('Accetta la privacy policy.'); return; } const { data, error } = await supabaseClient.auth.signUp({ email: document.getElementById('register-email').value, password: p1, options: { data: { nome: document.getElementById('register-name').value, cognome: document.getElementById('register-surname').value, telefono: document.getElementById('register-phone').value } } }); if (error) alert(error.message); else { alert('Registrazione riuscita! Se richiesta, controlla la tua email per confermare.'); navigateTo('login'); } }
+            async function handleLogout() { await supabaseClient.auth.signOut(); }
+            async function handlePasswordReset() { const { error } = await supabaseClient.auth.resetPasswordForEmail(document.getElementById('reset-email').value, { redirectTo: window.location.origin }); if (error) alert(error.message); else alert('Se l\'utente esiste, email di recupero inviata.'); }
+            async function handlePasswordUpdate() { const pwd = document.getElementById('new-password').value; if (pwd.length < 6) { alert('La password deve contenere almeno 6 caratteri.'); return; } const { error } = await supabaseClient.auth.updateUser({ password: pwd }); if (error) alert(error.message); else { showToast('Password aggiornata!'); await supabaseClient.auth.signOut(); } }
+            async function handleProfileUpdate() { const { error } = await supabaseClient.auth.updateUser({ data: { nome: document.getElementById('profile-name').value, cognome: document.getElementById('profile-surname').value, telefono: document.getElementById('profile-phone').value } }); if (error) alert(error.message); else showToast("Profilo aggiornato!"); }
+            async function handleShare() { const shareData = { title: 'NSC App', text: 'Entra a far parte del nostro sindacato, scopri l\'app!', url: 'https://www.carabinierinsc.it/iscriviti/' }; try { if (navigator.share) await navigator.share(shareData); else { await navigator.clipboard.writeText(shareData.url); showToast('Link di iscrizione copiato!'); } } catch (err) { console.error("Errore condivisione:", err); } }
+
+            // Funzioni Chatbot
+            function addMessage(text, sender) { const msg = document.createElement('div'); msg.classList.add('chat-message', sender); msg.innerHTML = `<div class="bubble">${text}</div>`; chatBody.appendChild(msg); chatBody.scrollTop = chatBody.scrollHeight; }
+            async function handleUserQuery() { const question = chatInput.value.trim(); if (question === '') return; addMessage(question, 'user'); chatInput.value = ''; addMessage('...', 'bot'); try { const res = await fetch('https://my-app2-0.onrender.com/ask', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({question})}); if (!res.ok) throw new Error('Risposta del server non valida.'); const data = await res.json(); chatBody.lastChild.remove(); addMessage(data.answer, 'bot'); } catch (e) { chatBody.lastChild.remove(); addMessage('Errore di connessione con Virgilio.', 'bot'); } }
+            
+            // Gestione Eventi
+            const addPageEventListeners = (pageName) => {
+                const actions = {
+                    'login': () => document.getElementById('login-button')?.addEventListener('click', handleLogin),
+                    'register': () => document.getElementById('register-button')?.addEventListener('click', handleRegister),
+                    'profilo': () => {
+                        document.querySelector('.btn-logout')?.addEventListener('click', handleLogout);
+                        document.getElementById('update-profile-button')?.addEventListener('click', handleProfileUpdate);
+                        document.getElementById('share-button')?.addEventListener('click', handleShare);
+                    },
+                    'forgot-password': () => document.getElementById('reset-button')?.addEventListener('click', handlePasswordReset),
+                    'update-password': () => document.getElementById('update-password-button')?.addEventListener('click', handlePasswordUpdate),
+                    'home': () => document.getElementById('ask-virgilio-button')?.addEventListener('click', () => openChat()),
+                    'bacheca': () => document.getElementById('bacheca-search-button')?.addEventListener('click', () => { const q = document.getElementById('bacheca-search').value; if(q) openChat(q); })
+                };
+                actions[pageName]?.();
+                if (['home', 'profilo'].includes(pageName)) displayUserData(currentUser);
+            };
+            
+            document.body.addEventListener('click', (e) => {
+                const pageLink = e.target.closest('a[data-page]');
+                if (pageLink) { e.preventDefault(); navigateTo(pageLink.dataset.page); }
+                const contextButton = e.target.closest('.context-chat-button');
+                if (contextButton) { const context = contextButton.dataset.context; openChat(`Riguardo a: "${context}", puoi darmi più dettagli?`); }
+            });
+
+            openChatButton.addEventListener('click', () => openChat());
+            closeChatButton.addEventListener('click', () => chatbotOverlay.classList.remove('visible'));
+            chatSendButton.addEventListener('click', handleUserQuery);
+            chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleUserQuery(); });
+
+            // Logica di Avvio con onAuthStateChange
+            supabaseClient.auth.onAuthStateChange((event, session) => {
+                currentUser = session?.user || null;
+                const currentPageId = appRoot.querySelector('[data-page-id]')?.dataset.pageId;
+
+                if (event === 'PASSWORD_RECOVERY') {
+                    navigateTo('update-password');
+                } else if (session) {
+                    if (!currentPageId || ['login', 'register', 'forgot-password', 'update-password'].includes(currentPageId)) {
+                        navigateTo('home');
+                    } else {
+                        displayUserData(currentUser);
+                    }
+                } else {
+                    if (!['login', 'register', 'forgot-password', 'update-password'].includes(currentPageId)) {
+                        navigateTo('login');
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>
