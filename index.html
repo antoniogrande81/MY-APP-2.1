@@ -20,23 +20,24 @@
 
     <style>
         /* CSS completo dell'applicazione */
-        :root { --primary-indigo: #1e104e; --accent-magenta: #e91e63; --accent-violet: #6a5acd; --bg-main: #f4f7fc; --bg-card: #ffffff; --text-dark: #1e104e; --text-light: #6e7a8a; --border-color: #e8ecf1; --shadow-color: rgba(30, 16, 78, 0.08); --error-red: #dc3545; }
+        :root { --primary-indigo: #1e104e; --accent-magenta: #e91e63; --accent-violet: #6a5acd; --bg-main: #f4f7fc; --bg-card: #ffffff; --text-dark: #1e104e; --text-light: #6e7a8a; --border-color: #e8ecf1; --shadow-color: rgba(30, 16, 78, 0.08); --error-red: #dc3545; --success-green: #28a745; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24 }
         body { margin: 0; font-family: 'Poppins', sans-serif; background-color: var(--bg-main); }
         .app-container { max-width: 420px; margin: auto; background-color: var(--bg-card); min-height: 100vh; position: relative; display: flex; flex-direction: column;}
         main { flex-grow: 1; padding: 24px; padding-bottom: 90px; }
         template { display: none; }
         .auth-container { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px 20px; box-sizing: border-box; }
-        .input-group { margin-bottom: 16px; }
+        .input-group { margin-bottom: 16px; position: relative; }
         .input-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 16px; box-sizing: border-box; }
         .input-group-checkbox { display: flex; align-items: center; margin-bottom: 20px; }
         .input-group-checkbox input { margin-right: 10px; }
         .input-group-checkbox a { color: var(--accent-violet); }
         .auth-link { text-align: center; margin-top: 20px; }
-        .auth-link a { color: var(--accent-violet); cursor: pointer; text-decoration: none; }
+        .auth-link a { color: var(--accent-violet); cursor: pointer; text-decoration: none; font-weight: 500;}
         .btn, .btn-primary, .btn-secondary { display: block; width: 100%; box-sizing: border-box; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; text-align: center; border: none; text-decoration: none;}
         .btn-primary { background: linear-gradient(90deg, var(--accent-magenta), var(--accent-violet)); color: white; margin-bottom: 12px; }
         .btn-secondary { background-color: var(--border-color); color: var(--text-dark); }
+        .btn-logout { background-color: transparent; border: 1px solid var(--error-red); color: var(--error-red); margin-top: 20px;}
         .bottom-nav { position: sticky; bottom: 0; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); display: flex; justify-content: space-around; box-shadow: 0 -4px 20px var(--shadow-color); border-top: 1px solid rgba(0, 0, 0, 0.05); padding: 8px 0; }
         .nav-item { text-align: center; color: var(--text-light); cursor: pointer; flex: 1; text-decoration: none; }
         .nav-item.active, .nav-item:hover { color: var(--accent-violet); }
@@ -44,6 +45,12 @@
         .nav-item.active .icon { font-variation-settings: 'FILL' 1; }
         .nav-item span { display: block; font-size: 12px; font-weight: 500; }
         .hidden { display: none; }
+        .profile-card { background-color: var(--bg-main); padding: 20px; border-radius: 16px; margin-bottom: 24px; }
+        .profile-card h2 { margin-top: 0; }
+        .profile-card .input-group label { font-weight: 600; color: var(--primary-indigo); }
+        .profile-card .input-group input:disabled { background-color: #e9ecef; opacity: 1; }
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background-color: var(--success-green); color: white; padding: 12px 24px; border-radius: 8px; z-index: 2000; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(-20px); }
         /* Stili Chatbot */
         .chatbot-fab { position: fixed; bottom: 90px; right: 20px; width: 60px; height: 60px; background: linear-gradient(45deg, var(--accent-magenta), var(--accent-violet)); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 6px 18px rgba(30, 16, 78, 0.2); cursor: pointer; z-index: 1000; transition: transform 0.3s ease; }
         .chatbot-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(30, 16, 78, 0.4); z-index: 1001; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
@@ -68,27 +75,10 @@
 <body>
 
     <template id="template-login">
-        <div class="auth-container">
-            <h1>Accedi</h1>
-            <div class="input-group"><input type="email" id="auth-email" placeholder="Email" autocomplete="email"></div>
-            <div class="input-group"><input type="password" id="auth-password" placeholder="Password" autocomplete="current-password"></div>
-            <button class="btn-primary" id="login-button">Accedi</button>
-            <div class="auth-link"><a data-page="register">Non hai un account? Registrati</a></div>
-            <div class="auth-link"><a data-page="forgot-password">Password dimenticata?</a></div>
-        </div>
+        <div class="auth-container"><h1>Accedi</h1><div class="input-group"><input type="email" id="auth-email" placeholder="Email" autocomplete="email"></div><div class="input-group"><input type="password" id="auth-password" placeholder="Password" autocomplete="current-password"></div><button class="btn-primary" id="login-button">Accedi</button><div class="auth-link"><a data-page="register">Non hai un account? Registrati</a></div><div class="auth-link"><a data-page="forgot-password">Password dimenticata?</a></div></div>
     </template>
     <template id="template-register">
-        <div class="auth-container">
-            <h1>Crea un Account</h1>
-            <div class="input-group"><input type="text" id="register-name" placeholder="Nome" autocomplete="given-name"></div>
-            <div class="input-group"><input type="text" id="register-surname" placeholder="Cognome" autocomplete="family-name"></div>
-            <div class="input-group"><input type="email" id="register-email" placeholder="Email" autocomplete="email"></div>
-            <div class="input-group"><input type="password" id="register-password" placeholder="Password (min. 6 caratteri)"></div>
-            <div class="input-group"><input type="password" id="register-confirm-password" placeholder="Conferma Password"></div>
-            <div class="input-group-checkbox"><input type="checkbox" id="privacy-check"><label for="privacy-check">Accetto la <a href="#">Privacy Policy</a></label></div>
-            <button class="btn-primary" id="register-button">Registrati</button>
-            <div class="auth-link"><a data-page="login">Hai già un account? Accedi</a></div>
-        </div>
+        <div class="auth-container"><h1>Crea un Account</h1><div class="input-group"><input type="text" id="register-name" placeholder="Nome" autocomplete="given-name"></div><div class="input-group"><input type="text" id="register-surname" placeholder="Cognome" autocomplete="family-name"></div><div class="input-group"><input type="tel" id="register-phone" placeholder="Telefono" autocomplete="tel"></div><div class="input-group"><input type="email" id="register-email" placeholder="Email" autocomplete="email"></div><div class="input-group"><input type="password" id="register-password" placeholder="Password (min. 6 caratteri)"></div><div class="input-group"><input type="password" id="register-confirm-password" placeholder="Conferma Password"></div><div class="input-group-checkbox"><input type="checkbox" id="privacy-check"><label for="privacy-check">Accetto la <a href="#">Privacy Policy</a></label></div><button class="btn-primary" id="register-button">Registrati</button><div class="auth-link"><a data-page="login">Hai già un account? Accedi</a></div></div>
     </template>
     <template id="template-forgot-password">
         <div class="auth-container"><h1>Recupera Password</h1><div class="input-group"><input type="email" id="reset-email" placeholder="La tua email"></div><button class="btn-primary" id="reset-button">Invia Istruzioni</button><div class="auth-link"><a data-page="login">Torna al Login</a></div></div>
@@ -100,7 +90,19 @@
         <h1 id="user-greeting">Ciao!</h1>
     </template>
     <template id="template-profilo">
-        <h1>Il Mio Profilo</h1><h2 id="user-email-profile"></h2><button class="btn-logout">Esci (Logout)</button>
+        <h1>Il Mio Profilo</h1>
+        <div class="profile-card">
+            <h2>Dati Personali</h2>
+            <div class="input-group"><label for="profile-name">Nome</label><input type="text" id="profile-name"></div>
+            <div class="input-group"><label for="profile-surname">Cognome</label><input type="text" id="profile-surname"></div>
+            <div class="input-group"><label for="profile-phone">Telefono</label><input type="tel" id="profile-phone"></div>
+            <button class="btn-primary" id="update-profile-button">Salva Modifiche</button>
+        </div>
+        <div class="profile-card">
+            <h2>Account</h2>
+            <div class="input-group"><label for="profile-email">Email</label><input type="email" id="profile-email" disabled></div>
+        </div>
+        <button class="btn-logout">Esci (Logout)</button>
     </template>
 
     <div class="app-container">
@@ -110,6 +112,7 @@
             <a class="nav-item" data-page="profilo"><span class="icon material-symbols-outlined">person</span><span>Profilo</span></a>
         </nav>
         <div class="chatbot-fab hidden" id="open-chat-button"><span class="material-symbols-outlined">support_agent</span></div>
+        <div class="toast" id="toast"></div>
     </div>
     
     <div class="chatbot-overlay" id="chatbot-overlay">
@@ -137,13 +140,25 @@
             let currentUser = null;
 
             // Funzioni UI
+            const showToast = (message) => {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            };
             const displayUserData = (user) => {
                 if (!user) return;
                 currentUser = user;
                 const userGreeting = document.getElementById('user-greeting');
                 if (userGreeting) userGreeting.textContent = `Ciao, ${user.user_metadata.nome || user.email.split('@')[0]}!`;
-                const profileEmail = document.getElementById('user-email-profile');
-                if (profileEmail) profileEmail.textContent = user.email;
+                const profileName = document.getElementById('profile-name');
+                const profileSurname = document.getElementById('profile-surname');
+                const profilePhone = document.getElementById('profile-phone');
+                const profileEmail = document.getElementById('profile-email');
+                if (profileName) profileName.value = user.user_metadata.nome || '';
+                if (profileSurname) profileSurname.value = user.user_metadata.cognome || '';
+                if (profilePhone) profilePhone.value = user.user_metadata.telefono || '';
+                if (profileEmail) profileEmail.value = user.email;
             };
             const navigateTo = (pageName) => {
                 const template = document.getElementById(`template-${pageName}`);
@@ -172,21 +187,16 @@
             async function handleRegister() {
                 const name = document.getElementById('register-name').value;
                 const surname = document.getElementById('register-surname').value;
+                const phone = document.getElementById('register-phone').value;
                 const email = document.getElementById('register-email').value;
                 const password = document.getElementById('register-password').value;
                 const confirmPassword = document.getElementById('register-confirm-password').value;
                 if (password !== confirmPassword) { alert("Le password non coincidono."); return; }
                 if (!document.getElementById('privacy-check').checked) { alert("Accetta la Privacy Policy."); return; }
                 
-                const { data, error } = await supabaseClient.auth.signUp({
-                    email,
-                    password,
-                    options: {
-                        data: {
-                            nome: name,
-                            cognome: surname,
-                        }
-                    }
+                const { error } = await supabaseClient.auth.signUp({
+                    email, password,
+                    options: { data: { nome: name, cognome: surname, telefono: phone } }
                 });
                 if (error) alert("Errore: " + error.message);
                 else alert("Registrazione riuscita! Controlla la tua email per la conferma.");
@@ -206,9 +216,19 @@
                 const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
                 if (error) alert("Errore: " + error.message); 
                 else { 
-                    alert("Password aggiornata con successo!");
+                    showToast("Password aggiornata con successo!");
                     await supabaseClient.auth.signOut();
                 }
+            }
+            async function handleProfileUpdate() {
+                const name = document.getElementById('profile-name').value;
+                const surname = document.getElementById('profile-surname').value;
+                const phone = document.getElementById('profile-phone').value;
+                const { error } = await supabaseClient.auth.updateUser({
+                    data: { nome: name, cognome: surname, telefono: phone }
+                });
+                if (error) alert("Errore: " + error.message);
+                else showToast("Profilo aggiornato con successo!");
             }
 
             // Funzioni Chatbot
@@ -249,11 +269,16 @@
                 const pageActions = {
                     'login': () => document.getElementById('login-button')?.addEventListener('click', handleLogin),
                     'register': () => document.getElementById('register-button')?.addEventListener('click', handleRegister),
-                    'profilo': () => document.querySelector('.btn-logout')?.addEventListener('click', handleLogout),
+                    'profilo': () => {
+                        document.querySelector('.btn-logout')?.addEventListener('click', handleLogout);
+                        document.getElementById('update-profile-button')?.addEventListener('click', handleProfileUpdate);
+                        displayUserData(currentUser);
+                    },
                     'forgot-password': () => document.getElementById('reset-button')?.addEventListener('click', handlePasswordReset),
                     'update-password': () => document.getElementById('update-password-button')?.addEventListener('click', handlePasswordUpdate)
                 };
                 pageActions[pageName]?.();
+                if (pageName === 'home') displayUserData(currentUser);
             };
             document.body.addEventListener('click', (e) => {
                 const pageLink = e.target.closest('a[data-page]');
