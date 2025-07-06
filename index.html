@@ -126,7 +126,7 @@
     <template id="template-bacheca">
         <h1>Notizie Sindacali</h1>
         <div class="search-bar-container"><input type="search" id="bacheca-search" placeholder="Chiedi a Virgilio sulle notizie..."><button class="btn-primary" id="bacheca-search-button" style="margin: 0; padding: 0 20px;"><span class="material-symbols-outlined">search</span></button></div>
-        <div class="news-item"><a><div class="news-icon"><span class="material-symbols-outlined">article</span></div><div class="news-content"><p>Corso di Difesa Personale e Tecniche di Disarmo.</p><span>Oggi</span></div></a><button class="context-chat-button" data-context="Corso di Difesa Personale e Tecniche di Disarmo"><span class="material-symbols-outlined">chat_bubble</span></button></div>
+        <div class="news-item"><a href="https://www.carabinierinsc.it/informazione/nsc-veneto-un-successo-lavvio-del-corso-di-avanzato-di-difesa-personale-e-tecniche-di-disarmo/" target="_blank"><div class="news-icon"><span class="material-symbols-outlined">article</span></div><div class="news-content"><p>Corso di Difesa Personale e Tecniche di Disarmo.</p><span>Oggi</span></div></a><button class="context-chat-button" data-context="Corso di Difesa Personale e Tecniche di Disarmo"><span class="material-symbols-outlined">chat_bubble</span></button></div>
     </template>
     <template id="template-documenti"><h1>I Miei Documenti</h1></template>
     <template id="template-contatti">
@@ -157,10 +157,10 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Inizializzazione
             const SUPABASE_URL = 'https://ywzkwxoxmhlmiasrgglw.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3emt3eG94bWhsbWlhc3JnZ2x3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3NDc2MDAsImV4cCI6MjA2NzMyMzYwMH0.fYJC_PycwbQHwPyQHfA63wukdB5Ma4SgwSy-6ms66fs';
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            
             const appRoot = document.getElementById('app-root');
             const mainNav = document.getElementById('main-nav');
             const openChatButton = document.getElementById('open-chat-button');
@@ -179,8 +179,8 @@
             const openChat = (prefilledText = '') => { if (chatInput) chatInput.value = prefilledText; chatbotOverlay.classList.add('visible'); if (prefilledText) chatInput.focus(); };
 
             // Funzioni di Autenticazione e Profilo
-            async function handleLogin() { await supabaseClient.auth.signInWithPassword({ email: document.getElementById('auth-email').value, password: document.getElementById('auth-password').value }); }
-            async function handleRegister() { const p1 = document.getElementById('register-password').value; if (p1 !== document.getElementById('register-confirm-password').value) { alert('Le password non coincidono.'); return; } if (!document.getElementById('privacy-check').checked) { alert('Accetta la privacy policy.'); return; } const { error } = await supabaseClient.auth.signUp({ email: document.getElementById('register-email').value, password: p1, options: { data: { nome: document.getElementById('register-name').value, cognome: document.getElementById('register-surname').value, telefono: document.getElementById('register-phone').value } } }); if (error) alert(error.message); else alert('Registrazione riuscita!'); }
+            async function handleLogin() { const { error } = await supabaseClient.auth.signInWithPassword({ email: document.getElementById('auth-email').value, password: document.getElementById('auth-password').value }); if (error) alert(error.message); }
+            async function handleRegister() { const p1 = document.getElementById('register-password').value; if (p1 !== document.getElementById('register-confirm-password').value) { alert('Le password non coincidono.'); return; } if (!document.getElementById('privacy-check').checked) { alert('Accetta la privacy policy.'); return; } const { data, error } = await supabaseClient.auth.signUp({ email: document.getElementById('register-email').value, password: p1, options: { data: { nome: document.getElementById('register-name').value, cognome: document.getElementById('register-surname').value, telefono: document.getElementById('register-phone').value } } }); if (error) alert(error.message); else { alert('Registrazione riuscita! Se richiesta, controlla la tua email per la conferma.'); navigateTo('login'); } }
             async function handleLogout() { await supabaseClient.auth.signOut(); }
             async function handlePasswordReset() { const { error } = await supabaseClient.auth.resetPasswordForEmail(document.getElementById('reset-email').value, { redirectTo: window.location.origin }); if (error) alert(error.message); else alert('Email di recupero inviata.'); }
             async function handlePasswordUpdate() { const pwd = document.getElementById('new-password').value; if (pwd.length < 6) { alert('Password troppo corta'); return; } const { error } = await supabaseClient.auth.updateUser({ password: pwd }); if (error) alert(error.message); else { showToast('Password aggiornata!'); await supabaseClient.auth.signOut(); } }
@@ -225,14 +225,18 @@
             // Logica di Avvio
             supabaseClient.auth.onAuthStateChange(async (event, session) => {
                 currentUser = session?.user || null;
+                const isUserLoggedIn = !!session;
+
+                // Logica per mostrare la pagina corretta
                 if (event === 'PASSWORD_RECOVERY') {
                     navigateTo('update-password');
-                } else if (session) {
-                    navigateTo('home');
-                    // --- MODIFICA CHIAVE: Messaggio di benvenuto personalizzato ---
-                    if (chatBody.children.length === 0) { // Mostra il benvenuto solo se la chat è vuota
-                        const userName = currentUser.user_metadata.nome || currentUser.email.split('@')[0];
-                        addMessage(`Ciao ${userName}, sono Virgilio, il tuo dirigente virtuale. In cosa posso aiutarti?`, 'bot');
+                } else if (isUserLoggedIn) {
+                    const currentPageTemplate = appRoot.querySelector('div.auth-container') ? 'auth' : 'main';
+                    if (currentPageTemplate === 'auth') {
+                        navigateTo('home');
+                    } else {
+                        // Se sono già su una pagina interna, non faccio nulla per evitare ricaricamenti
+                        displayUserData(currentUser);
                     }
                 } else {
                     navigateTo('login');
