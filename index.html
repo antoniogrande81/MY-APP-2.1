@@ -139,7 +139,7 @@
         <nav class="bottom-nav hidden" id="main-nav">
             <a class="nav-item" data-page="home"><span class="icon material-symbols-outlined">home</span><span>Home</span></a>
             <a class="nav-item" data-page="bacheca"><span class="icon material-symbols-outlined">feed</span><span>Notizie</span></a>
-            <a href="https://www.bestbadge.org" target="_blank" class="nav-item"><span class="icon material-symbols-outlined">workspace_premium</span><span>Servizi</span></a>
+            <a href="https://www.bestbadge.com" target="_blank" class="nav-item"><span class="icon material-symbols-outlined">workspace_premium</span><span>Servizi</span></a>
             <a class="nav-item" data-page="contatti"><span class="icon material-symbols-outlined">contact_phone</span><span>Contatti</span></a>
             <a class="nav-item" data-page="profilo"><span class="icon material-symbols-outlined">person</span><span>Profilo</span></a>
         </nav>
@@ -229,6 +229,11 @@
                     navigateTo('update-password');
                 } else if (session) {
                     navigateTo('home');
+                    // --- MODIFICA CHIAVE: Messaggio di benvenuto personalizzato ---
+                    if (chatBody.children.length === 0) { // Mostra il benvenuto solo se la chat è vuota
+                        const userName = currentUser.user_metadata.nome || currentUser.email.split('@')[0];
+                        addMessage(`Ciao ${userName}, sono Virgilio, il tuo dirigente virtuale. In cosa posso aiutarti?`, 'bot');
+                    }
                 } else {
                     navigateTo('login');
                 }
