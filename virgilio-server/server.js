@@ -9,7 +9,12 @@ const { OpenAI } = require('openai');
 
 // Inizializza Express
 const app = express();
-app.use(cors());
+
+// Specifica chi può chiamare il tuo server
+const corsOptions = {
+  origin: 'https://la-mia-app-2-1.vercel.app' // Assicurati che questo sia l'URL corretto della tua app Vercel
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Inizializza i client di Supabase e OpenAI
@@ -35,16 +40,14 @@ app.post('/ask', async (req, res) => {
     // 2. Cerca i documenti pertinenti nel database Supabase
     const { data: documents, error } = await supabase.rpc('match_documents', {
       query_embedding: queryEmbedding,
-      match_count: 5, // Prendi i 5 documenti più pertinenti
+      match_count: 8, // <-- VALORE AGGIORNATO
       filter: {}
     });
 
     if (error) throw error;
 
-    // --- RIGA DI DEBUG AGGIUNTA ---
-    // Questa linea stamperà nei log di Render i documenti trovati
+    // Aggiungiamo un log per vedere il contesto recuperato
     console.log('--- DOCUMENTI TROVATI PER IL CONTESTO ---', documents);
-    // ------------------------------------
 
     // 3. Costruisci il contesto da passare a OpenAI
     const contextText = documents.map(doc => doc.content).join('\n---\n');
