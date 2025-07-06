@@ -47,25 +47,6 @@
         .btn, .btn-primary { display: block; width: 100%; box-sizing: border-box; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; text-align: center; text-decoration: none; border: none; }
         .btn-primary { background: linear-gradient(90deg, var(--accent-magenta), var(--accent-violet)); color: white; margin-bottom: 12px; }
         .btn-secondary { background-color: var(--border-color); color: var(--text-dark); }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
-        .header h1 { font-size: 26px; font-weight: 700; margin: 0; }
-        .header p { margin: 4px 0 0 0; color: var(--text-light); font-size: 16px; }
-        .main-card { background: linear-gradient(135deg, var(--accent-violet), var(--primary-indigo)); color: white; padding: 24px; border-radius: 20px; margin-top: 16px; }
-        .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .action-item { padding: 20px 15px; background-color: var(--bg-main); border-radius: 16px; text-align: center; cursor: pointer; border: 1px solid var(--border-color); }
-        .action-item .icon { font-size: 32px; margin-bottom: 12px; color: var(--accent-violet); }
-        .action-item span { font-size: 13px; font-weight: 500; }
-        .news-card { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
-        .news-card h3 { margin: 0 0 8px 0; font-size: 18px; color: var(--primary-indigo); }
-        .news-card .date { font-size: 12px; color: var(--text-light); margin-bottom: 12px; }
-        .news-card p { margin: 0; line-height: 1.6; }
-        .doc-item { display: flex; align-items: center; padding: 16px; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s ease; }
-        .doc-item:hover { transform: translateY(-2px); box-shadow: 0 4px 10px var(--shadow-color); border-color: var(--accent-violet); }
-        .doc-item .icon { color: var(--accent-violet); font-size: 28px; margin-right: 16px; }
-        .doc-item span { font-weight: 500; }
-        .profile-header { text-align: center; margin-bottom: 32px; }
-        .profile-avatar { width: 90px; height: 90px; border-radius: 50%; background-color: var(--accent-violet); color: white; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 16px auto; }
-        .btn-logout { display: block; width: 100%; box-sizing: border-box; text-align: center; padding: 14px; border: 1px solid var(--error-red); color: var(--error-red); border-radius: 8px; text-decoration: none; font-weight: 500; margin-top: 32px; cursor: pointer; }
         .bottom-nav { position: sticky; bottom: 0; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; justify-content: space-around; box-shadow: 0 -4px 20px var(--shadow-color); border-top: 1px solid rgba(0, 0, 0, 0.05); padding: 8px 0; }
         .nav-item { text-align: center; color: var(--text-light); cursor: pointer; flex: 1; padding: 8px 0; transition: color 0.3s ease; text-decoration: none; }
         .nav-item.active, .nav-item:hover { color: var(--accent-violet); }
@@ -74,7 +55,6 @@
         .nav-item span { display: block; font-size: 12px; font-weight: 500; }
         .hidden { display: none; }
         .chatbot-fab { position: fixed; bottom: 90px; right: 20px; width: 60px; height: 60px; background: linear-gradient(45deg, var(--accent-magenta), var(--accent-violet)); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 6px 18px rgba(30, 16, 78, 0.2); cursor: pointer; z-index: 1000; transition: transform 0.3s ease; }
-        .chatbot-fab:hover { transform: scale(1.1); }
         .chatbot-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(30, 16, 78, 0.4); z-index: 1001; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
         .chatbot-overlay.visible { opacity: 1; visibility: visible; }
         .chatbot-window { width: 90%; max-width: 400px; height: 85%; background-color: var(--bg-card); border-radius: 24px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; overflow: hidden; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -123,54 +103,36 @@
             </div>
         </div>
     </template>
+    <template id="template-update-password">
+        <div class="auth-container fade-in">
+            <div class="auth-logo material-symbols-outlined">password</div>
+            <div class="auth-form">
+                <h1>Crea una nuova password</h1>
+                <p>Inserisci la tua nuova password sicura.</p>
+                <div class="input-group">
+                    <label for="new-password">Nuova Password</label>
+                    <input type="password" id="new-password" placeholder="••••••••••">
+                </div>
+                <button class="btn-primary" id="update-password-button">Salva Nuova Password</button>
+            </div>
+        </div>
+    </template>
     <template id="template-home">
-        <header class="header fade-in"><div><h1 id="user-greeting">Ciao!</h1><p>Il tuo sindacato in un'app</p></div><span class="material-symbols-outlined" style="font-size: 28px; color: var(--text-light); cursor: pointer;">notifications</span></header>
-        <div class="main-card fade-in" style="animation-delay: 0.1s;"><h2 style="font-size: 13px; font-weight: 600; opacity: 0.8; text-transform: uppercase;">ULTIMA NOTIZIA</h2><p style="font-size: 18px; font-weight: 500; line-height: 1.4;">È disponibile la tua busta paga di Luglio 2025</p></div>
-        <h2 class="section-title fade-in" style="animation-delay: 0.2s; margin-top: 28px;">Accesso Rapido</h2>
-        <div class="quick-actions"><div class="action-item"><div class="icon material-symbols-outlined">calendar_month</div><span>Prenota Appuntamento</span></div><div class="action-item"><div class="icon material-symbols-outlined">support_agent</div><span>Contatta Dirigente</span></div></div>
-    </template>
-    <template id="template-bacheca">
-        <h1 class="section-title fade-in">Bacheca Notizie</h1>
-        <div class="news-card fade-in" style="animation-delay: 0.1s;"><h3>Rinnovo Contratto Collettivo: Tutte le Novità</h3><div class="date">03 Luglio 2025</div><p>Firmata l'ipotesi di accordo per il rinnovo del CCNL...</p></div>
-        <div class="news-card fade-in" style="animation-delay: 0.2s;"><h3>Scadenze Fiscali di Agosto: Guida alla compilazione</h3><div class="date">01 Luglio 2025</div><p>Ricordiamo a tutti gli iscritti le prossime scadenze...</p></div>
-    </template>
-    <template id="template-documenti">
-        <h1 class="section-title fade-in">I Miei Documenti</h1>
-        <p style="color: var(--text-light); margin-top:-10px; margin-bottom:24px;">Qui trovi i tuoi documenti personali e la modulistica utile.</p>
-        <h2 class="section-title" style="font-size: 18px;">Documenti Personali</h2>
-        <div class="doc-list"><div class="doc-item"><span class="icon material-symbols-outlined">receipt_long</span><span>Busta Paga - Giugno 2025.pdf</span></div></div>
-        <h2 class="section-title" style="font-size: 18px; margin-top: 32px;">Modulistica Generale</h2>
-        <div class="doc-list"><div class="doc-item"><span class="icon material-symbols-outlined">download</span><span>Modulo Richiesta Ferie.pdf</span></div></div>
-    </template>
+        </template>
     <template id="template-profilo">
-        <h1 class="section-title fade-in">Il Mio Profilo</h1>
-        <div class="profile-header fade-in"><div class="profile-avatar" id="user-avatar">?</div><h2 id="user-email-profile"></h2><p style="color: var(--text-light); margin-top: 4px;">Iscritto dal 15/03/2018</p></div>
-        <button class="btn-logout">Esci (Logout)</button>
-    </template>
+        </template>
 
     <div class="app-container">
         <main id="app-root"></main>
         <nav class="bottom-nav hidden" id="main-nav">
-            <a class="nav-item" data-page="home"><span class="icon material-symbols-outlined">home</span><span>Home</span></a>
-            <a class="nav-item" data-page="bacheca"><span class="icon material-symbols-outlined">feed</span><span>Bacheca</span></a>
-            <a class="nav-item" data-page="documenti"><span class="icon material-symbols-outlined">folder_open</span><span>Documenti</span></a>
-            <a class="nav-item" data-page="profilo"><span class="icon material-symbols-outlined">person</span><span>Profilo</span></a>
-        </nav>
+            </nav>
     </div>
 
     <div class="chatbot-fab hidden" id="open-chat-button">
         <span class="material-symbols-outlined">support_agent</span>
     </div>
     <div class="chatbot-overlay" id="chatbot-overlay">
-        <div class="chatbot-window">
-            <div class="chat-header"><h3>Virgilio</h3><span class="material-symbols-outlined close-chat" id="close-chat-button">close</span></div>
-            <div class="chat-body" id="chat-body"></div>
-            <div class="chat-input">
-                <input type="text" id="chat-input" placeholder="Fai una domanda...">
-                <button id="chat-send-button" aria-label="Invia messaggio"><span class="material-symbols-outlined">send</span></button>
-            </div>
         </div>
-    </div>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -181,149 +143,70 @@
             const appRoot = document.getElementById('app-root');
             const mainNav = document.getElementById('main-nav');
             const openChatButton = document.getElementById('open-chat-button');
-            const closeChatButton = document.getElementById('close-chat-button');
-            const chatbotOverlay = document.getElementById('chatbot-overlay');
-            const chatBody = document.getElementById('chat-body');
-            const chatInput = document.getElementById('chat-input');
-            const chatSendButton = document.getElementById('chat-send-button');
-
-            const displayUserData = (user) => {
-                if (!user) return;
-                const userEmail = user.email;
-                const greeting = document.getElementById('user-greeting');
-                const profileEmail = document.getElementById('user-email-profile');
-                const avatar = document.getElementById('user-avatar');
-                if (greeting) greeting.textContent = `Ciao, ${userEmail.split('@')[0]}!`;
-                if (profileEmail) profileEmail.textContent = userEmail;
-                if (avatar) avatar.textContent = userEmail.charAt(0).toUpperCase();
-            };
             
-            async function handleLogin() {
-                const email = document.getElementById('auth-email').value;
-                const password = document.getElementById('auth-password').value;
-                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                if (error) alert("Errore: " + error.message); else navigateTo('home');
-            }
+            // --- FUNZIONI DI AUTENTICAZIONE E CHAT (omesse per brevità) ---
+            async function handleLogin() { /* ... */ }
+            async function handleRegister() { /* ... */ }
+            async function handleLogout() { /* ... */ }
+            async function handlePasswordReset() { /* ... */ }
+            async function handleUserQuery() { /* ... */ }
 
-            async function handleRegister() {
-                const privacyCheckbox = document.getElementById('privacy-check');
-                if (!privacyCheckbox.checked) { alert("Per registrarti devi prima accettare la Privacy Policy."); return; }
-                const email = document.getElementById('auth-email').value;
-                const password = document.getElementById('auth-password').value;
-                const { data, error } = await supabaseClient.auth.signUp({ email, password });
-                if (error) alert("Errore: " + error.message); else alert("Registrazione riuscita! Se richiesta, controlla la tua email per confermare l'account.");
-            }
-            
-            async function handleLogout() {
-                await supabaseClient.auth.signOut();
-                navigateTo('login');
-            }
-
-            async function handlePasswordReset() {
-                const email = document.getElementById('reset-email').value;
-                const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin });
-                if (error) alert("Errore: " + error.message); else { alert("Se l'utente esiste, abbiamo inviato le istruzioni per il recupero password alla tua email."); navigateTo('login'); }
-            }
-
-            function addMessage(text, sender) {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('chat-message', sender);
-                const bubbleDiv = document.createElement('div');
-                bubbleDiv.classList.add('bubble');
-                bubbleDiv.textContent = text;
-                messageDiv.appendChild(bubbleDiv);
-                chatBody.appendChild(messageDiv);
-                chatBody.scrollTop = chatBody.scrollHeight;
-            }
-
-            async function handleUserQuery() {
-                const userQuestion = chatInput.value.trim();
-                if (userQuestion === '') return;
-                addMessage(userQuestion, 'user');
-                chatInput.value = '';
-                chatInput.disabled = true;
-                chatSendButton.disabled = true;
-                addMessage('Virgilio sta pensando...', 'bot');
-                try {
-                    const response = await fetch('https://my-app2-0.onrender.com/ask', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ question: userQuestion }),
-                    });
-                    if (!response.ok) throw new Error('La risposta del server non è valida.');
-                    const data = await response.json();
-                    chatBody.removeChild(chatBody.lastChild);
-                    addMessage(data.answer, 'bot');
-                } catch (error) {
-                    chatBody.removeChild(chatBody.lastChild);
-                    addMessage('Ops, c\'è stato un problema di connessione con Virgilio.', 'bot');
-                    console.error("Errore nella chiamata a Virgilio:", error);
-                } finally {
-                    chatInput.disabled = false;
-                    chatSendButton.disabled = false;
-                    chatInput.focus();
+            // --- NUOVA FUNZIONE PER AGGIORNARE LA PASSWORD ---
+            async function handlePasswordUpdate() {
+                const newPassword = document.getElementById('new-password').value;
+                if (newPassword.length < 6) {
+                    alert("La password deve essere di almeno 6 caratteri.");
+                    return;
+                }
+                const { data, error } = await supabaseClient.auth.updateUser({ password: newPassword });
+                if (error) {
+                    alert("Errore nell'aggiornamento della password: " + error.message);
+                } else {
+                    alert("Password aggiornata con successo! Ora puoi effettuare il login.");
+                    // Pulisce l'URL dal token di reset
+                    window.location.hash = ''; 
+                    navigateTo('login');
                 }
             }
             
-            const navigateTo = async (pageName) => {
-                const template = document.getElementById(`template-${pageName}`);
-                if (!template) return;
-                appRoot.innerHTML = '';
-                appRoot.appendChild(template.content.cloneNode(true));
-                const isAuthPage = pageName === 'login' || pageName === 'forgot-password';
-                openChatButton.classList.toggle('hidden', isAuthPage);
-                updateNav(pageName);
-                addEventListenersForPage(pageName);
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                displayUserData(user);
-            };
-
-            const updateNav = (currentPage) => {
-                mainNav.classList.toggle('hidden', currentPage === 'login' || currentPage === 'forgot-password');
-                document.querySelectorAll('.nav-item').forEach(item => {
-                    item.classList.toggle('active', item.dataset.page === currentPage);
-                });
-            };
-
+            const navigateTo = async (pageName) => { /* ... */ };
+            const updateNav = (currentPage) => { /* ... */ };
+            
             const addEventListenersForPage = (pageName) => {
-                if (pageName === 'login') {
-                    document.getElementById('login-button')?.addEventListener('click', handleLogin);
-                    document.getElementById('register-button')?.addEventListener('click', handleRegister);
-                }
-                if (pageName === 'profilo') {
-                    appRoot.querySelector('.btn-logout')?.addEventListener('click', handleLogout);
-                }
-                if (pageName === 'forgot-password') {
-                    document.getElementById('reset-button')?.addEventListener('click', handlePasswordReset);
+                if (pageName === 'login') { /* ... */ }
+                if (pageName === 'profilo') { /* ... */ }
+                if (pageName === 'forgot-password') { /* ... */ }
+                // --- NUOVO EVENT LISTENER ---
+                if (pageName === 'update-password') {
+                    document.getElementById('update-password-button')?.addEventListener('click', handlePasswordUpdate);
                 }
             };
             
-            document.body.addEventListener('click', (event) => {
-                const pageLink = event.target.closest('a[data-page]');
-                if (pageLink && !pageLink.classList.contains('nav-item')) {
-                    event.preventDefault();
-                    navigateTo(pageLink.dataset.page);
+            // --- LOGICA DI AVVIO MODIFICATA ---
+            const startApp = async () => {
+                // Controlla se l'URL contiene un token di recupero password
+                const hash = window.location.hash;
+                if (hash.includes('type=recovery')) {
+                    const params = new URLSearchParams(hash.substring(1));
+                    const accessToken = params.get('access_token');
+                    if (accessToken) {
+                        // Salva la sessione temporanea per il reset
+                        await supabaseClient.auth.setSession({ access_token: accessToken, refresh_token: '' });
+                        navigateTo('update-password');
+                        return; // Ferma l'esecuzione per mostrare la pagina di reset
+                    }
                 }
-            });
 
-            mainNav.addEventListener('click', (event) => {
-                const navLink = event.target.closest('.nav-item[data-page]');
-                if (navLink) { event.preventDefault(); navigateTo(navLink.dataset.page); }
-            });
-
-            openChatButton.addEventListener('click', () => chatbotOverlay.classList.add('visible'));
-            closeChatButton.addEventListener('click', () => chatbotOverlay.classList.remove('visible'));
-            chatSendButton.addEventListener('click', handleUserQuery);
-            chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleUserQuery(); });
-
-            const checkSession = async () => {
+                // Se non c'è un token di recupero, procede con il normale controllo della sessione
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 navigateTo(session ? 'home' : 'login');
             };
 
+            // Incolla qui il resto del tuo codice JS (handleLogin, handleRegister, etc.)
+            // e assicurati che la funzione di avvio sia `startApp()`
+
             // Avvio dell'applicazione
-            addMessage("Ciao! Sono Virgilio. Chiedimi pure qualcosa sui documenti a mia disposizione.", 'bot');
-            checkSession();
+            startApp();
         });
     </script>
 </body>
